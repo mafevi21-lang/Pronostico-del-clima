@@ -1,164 +1,167 @@
-# 🌤️ Predicción Climática con Modelo Oculto de Markov (HMM)
+# Modelo Oculto de Markov (HMM) — Predicción Climática
 
-Simulación de un Hidden Markov Model que predice el estado del clima (Soleado, Nublado, Lluvioso) a partir de observaciones de humedad atmosférica. Implementado en Python puro con `numpy` y visualizado con `matplotlib`.
-
----
-
-## 📋 Descripción del Modelo
-
-Un **Modelo Oculto de Markov** asume que existe una secuencia de estados ocultos (el clima real) que no podemos observar directamente, y una secuencia de observaciones (la humedad) que sí podemos medir. El modelo aprende las relaciones probabilísticas entre ambas.
-
-```
-Estado oculto:    Soleado → Soleado → Nublado → Lluvioso → ...
-                     ↓          ↓         ↓          ↓
-Observación:      H. Baja  → H. Baja → H. Media → H. Alta → ...
-```
-
-### Estados ocultos
-| Estado | Color en gráfico |
-|--------|-----------------|
-| ☀️ Soleado | Amarillo `#FFD700` |
-| ☁️ Nublado | Azul claro `#87CEEB` |
-| 🌧️ Lluvioso | Azul oscuro `#1E4D8C` |
-
-### Observaciones
-| Observación | Descripción |
-|------------|-------------|
-| 💧 Humedad Baja | Ambiente seco |
-| 💧💧 Humedad Media | Ambiente moderado |
-| 💧💧💧 Humedad Alta | Ambiente húmedo |
+Simulación de condiciones climáticas a partir de observaciones de humedad ambiental.  
+Asignatura: Simulación — Módulo 2
 
 ---
 
-## 🔢 Parámetros del Modelo
+## Descripción
 
-### Matriz de Transición `A`
-Probabilidad de pasar de un estado climático a otro al día siguiente.
+Este proyecto implementa un Modelo Oculto de Markov (HMM) de 3 estados para simular
+la secuencia de condiciones climáticas diarias (Soleado, Nublado, Lluvioso) a partir
+de niveles de humedad observables (Baja, Media, Alta).
 
-|             | Soleado | Nublado | Lluvioso |
-|-------------|:-------:|:-------:|:--------:|
-| **Soleado** | 0.7     | 0.2     | 0.1      |
-| **Nublado** | 0.3     | 0.4     | 0.3      |
-| **Lluvioso**| 0.2     | 0.3     | 0.5      |
-
-### Matriz de Emisión `B`
-Probabilidad de observar cierto nivel de humedad dado el estado climático.
-
-|             | H. Baja | H. Media | H. Alta |
-|-------------|:-------:|:--------:|:-------:|
-| **Soleado** | 0.7     | 0.2      | 0.1     |
-| **Nublado** | 0.2     | 0.5      | 0.3     |
-| **Lluvioso**| 0.1     | 0.3      | 0.6     |
-
-### Distribución Inicial `π`
-| Soleado | Nublado | Lluvioso |
-|:-------:|:-------:|:--------:|
-| 0.6     | 0.3     | 0.1      |
+El modelo parte de la idea de que el clima real no es directamente observable,
+pero sí podemos medir la humedad ambiental, que está estadísticamente relacionada
+con el estado climático subyacente.
 
 ---
 
-## 📊 Salida del Programa
+## Requisitos
 
-El script genera:
+- Python 3.8 o superior
+- NumPy
+- Matplotlib
 
-1. **Consola** — Primeros 10 días con formato `Día X: Estado → Observación`
-2. **Estadísticas** — Conteo de días por estado y distribución de humedad
-3. **Matriz de confusión** — Cruce entre estados ocultos y observaciones
-4. **Gráfico** (`hmm_clima.png`) — Dos gráficos de barras alineados temporalmente
+Instalar dependencias:
 
-### Ejemplo de salida en consola
 ```
-Día  1: Soleado    →  Humedad Alta
-Día  2: Nublado    →  Humedad Media
-Día  3: Soleado    →  Humedad Baja
-...
-```
-
----
-
-## 🚀 Instalación y Uso
-
-### Requisitos
-```
-python >= 3.8
-numpy
-matplotlib
-```
-
-### Instalación de dependencias
-```bash
 pip install numpy matplotlib
 ```
 
-### Ejecución
-```bash
+---
+
+## Cómo ejecutar
+
+```
 python hmm_clima.py
 ```
 
-### Google Colab / Jupyter Notebook
-Copia y pega el contenido de `hmm_clima.py` directamente en una celda — `numpy` y `matplotlib` ya vienen preinstalados.
+El programa imprime en consola las primeras 10 observaciones, las estadísticas
+completas de los 30 días y guarda 2 gráficas en la misma carpeta.
 
 ---
 
-## 🗂️ Estructura del Proyecto
+## Parámetros del modelo
+
+### Estados ocultos (clima real)
+
+| Estado    | Descripción                        |
+|-----------|------------------------------------|
+| Soleado   | Día despejado, baja probabilidad de lluvia |
+| Nublado   | Cielo cubierto, estado intermedio  |
+| Lluvioso  | Precipitación activa               |
+
+### Observaciones (humedad medible)
+
+| Observación   | Descripción                  |
+|---------------|------------------------------|
+| Humedad Baja  | Ambiente seco                |
+| Humedad Media | Condición intermedia         |
+| Humedad Alta  | Ambiente húmedo              |
+
+### Distribución inicial π
+
+| Estado    | Probabilidad |
+|-----------|--------------|
+| Soleado   | 0.60         |
+| Nublado   | 0.30         |
+| Lluvioso  | 0.10         |
+
+### Matriz de transición A
+
+|            | → Soleado | → Nublado | → Lluvioso |
+|------------|-----------|-----------|------------|
+| Soleado    | 0.70      | 0.20      | 0.10       |
+| Nublado    | 0.30      | 0.40      | 0.30       |
+| Lluvioso   | 0.20      | 0.30      | 0.50       |
+
+### Matriz de emisión B
+
+|            | Baja | Media | Alta |
+|------------|------|-------|------|
+| Soleado    | 0.70 | 0.20  | 0.10 |
+| Nublado    | 0.20 | 0.50  | 0.30 |
+| Lluvioso   | 0.10 | 0.30  | 0.60 |
+
+---
+
+## Estructura del código
 
 ```
-📦 hmm-clima/
- ┣ 📄 hmm_clima.py      # Código principal
- ┣ 📄 README.md         # Este archivo
- ┗ 📊 hmm_clima.png     # Gráfico generado (se crea al ejecutar)
+hmm_clima.py
+│
+├── class HMM
+│   ├── __init__()                     → Inicializa parámetros π, A, B
+│   ├── simular(n_pasos)               → Genera secuencia de estados y observaciones
+│   ├── calcular_estadisticas()        → Días por estado, % humedad, matriz de confusión
+│   └── imprimir_primeras_observaciones() → Muestra tabla en consola
+│
+├── CONFIGURACIÓN                      → Definición de π, A, B y nombres
+├── EJECUCIÓN                          → Simulación de 30 días
+├── ESTADÍSTICAS EN CONSOLA            → Impresión de resultados
+└── VISUALIZACIÓN
+    ├── Figura 1: secuencia temporal   → simulacion_hmm.png
+    └── Figura 2: estadísticas         → estadisticas_hmm.png
 ```
 
 ---
 
-## 🧠 Cómo Funciona el Código
+## Salidas generadas
 
-```python
-# 1. Definir el modelo
-hmm = HMM(states, observations, trans_matrix, emis_matrix, init_dist)
-
-# 2. Simular T días
-hidden_seq, obs_seq = hmm.simulate(T=30)
-
-# 3. El método simulate() en cada paso t:
-#    a) Transiciona el estado:   estado_t ~ A[estado_{t-1}]
-#    b) Emite una observación:   obs_t    ~ B[estado_t]
-```
-
-### Clase `HMM`
-| Método | Descripción |
-|--------|-------------|
-| `__init__()` | Inicializa matrices A, B y distribución π |
-| `sample_state(probs)` | Muestrea un índice dado un vector de probabilidades |
-| `simulate(T)` | Genera secuencias de longitud T |
+| Archivo               | Contenido                                                        |
+|-----------------------|------------------------------------------------------------------|
+| `simulacion_hmm.png`  | Secuencia diaria de estados climáticos y niveles de humedad (barras de color por día) |
+| `estadisticas_hmm.png`| Gráfico de torta de estados, barras de humedad y mapa de calor de la matriz de confusión |
 
 ---
 
-## 📈 Ejemplo de Resultados (semilla 42, 30 días)
+## Salida en consola (ejemplo)
 
-| Estado | Días | Porcentaje |
-|--------|:----:|:----------:|
-| ☀️ Soleado | 22 | 73.3 % |
-| ☁️ Nublado | 4 | 13.3 % |
-| 🌧️ Lluvioso | 4 | 13.3 % |
-
-**Matriz de confusión:**
 ```
-               H. Baja   H. Media   H. Alta
-Soleado           15         3         4
-Nublado            1         3         0
-Lluvioso           0         0         4
+====================================================
+  PRIMERAS 10 OBSERVACIONES DE LA SIMULACIÓN
+====================================================
+  Día  1: Soleado     →  Humedad Baja
+  Día  2: Soleado     →  Humedad Baja
+  ...
+====================================================
+
+====================================================
+  ESTADÍSTICAS DE LA SIMULACIÓN (30 días)
+====================================================
+
+  Días en cada estado climático:
+    Soleado   : 17 días ( 56.7%)  █████████████████
+    Nublado   :  8 días ( 26.7%)  ████████
+    Lluvioso  :  5 días ( 16.7%)  █████
+
+  Porcentaje de humedad observada:
+    Humedad Baja   :  50.0%
+    Humedad Media  :  30.0%
+    Humedad Alta   :  20.0%
 ```
 
 ---
 
-## 📚 Referencias
+## Conceptos clave
 
-- Rabiner, L. R. (1989). *A tutorial on hidden Markov models and selected applications in speech recognition.* Proceedings of the IEEE.
-- Jurafsky, D. & Martin, J. H. (2023). *Speech and Language Processing* (3rd ed.). [web.stanford.edu/~jurafsky/slp3](https://web.stanford.edu/~jurafsky/slp3/)
+**¿Qué es un HMM?**  
+Un Modelo Oculto de Markov es un sistema estocástico donde la variable de interés
+(el estado) no es directamente observable. Solo podemos ver las emisiones (observaciones)
+que genera ese estado. El modelo aprende la relación entre ambos.
+
+**Proceso generativo:**
+1. Se elige el estado inicial según π.
+2. En cada paso se emite una observación según B[estado actual].
+3. El sistema transita al siguiente estado según A[estado actual].
+
+**Reproducibilidad:**  
+El código usa `np.random.seed(42)` para que los resultados sean idénticos en cada ejecución.
 
 ---
 
-## 📝 Licencia
+## Autor
 
-Este proyecto está bajo la licencia MIT. Libre para usar, modificar y distribuir.
+Estudiante de Ingeniería de Software y Datos  
+Asignatura: Simulación — Módulo 2
